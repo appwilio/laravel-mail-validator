@@ -8,11 +8,7 @@
             <div class="row">
                 <div class="form-group">
                     <label class="control-label">Upload csv file</label>
-                    <input type="file">
-                </div>
-                <div class="form-group">
-                    <label class="control-label">email</label>
-                    <input type="email" name="email">
+                    <input type="file" name="file">
                 </div>
             </div>
             <div class="row">

@@ -17,8 +17,6 @@ Route::get('/', function () {
 
 
 Route::group(["prefix" => "upload"], function () {
-    Route::get('/', ["as" => "upload.form", function () {
-        return view('upload');
-    }]);
-    Route::post('/', "UploadController@upload");
+    Route::get('/', ["as" => "upload.form", "uses" => "UploadController@showForm"]);
+    Route::post('/', "UploadController@doUpload");
 });
