@@ -14,6 +14,8 @@ abstract class AbstractRepository implements Repository
      */
     protected $model;
 
+    protected $paginateSize = 20;
+
     /**
      * Specify the entity class name.
      *
@@ -85,5 +87,12 @@ abstract class AbstractRepository implements Repository
     public function getManyBy($key, $value = null)
     {
         return $this->model->where($key, $value)->get();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function paginate() {
+        return $this->model->paginate($this->paginateSize);
     }
 }

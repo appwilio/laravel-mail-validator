@@ -1,3 +1,11 @@
+@section("styles")
+    <link href="/css/all.css" rel="stylesheet">
+@endsection
+
+@section("scripts")
+    <script src="/js/all.js"></script>
+@endsection
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap 101 Template</title>
     <!-- Bootstrap -->
-    <link href="/css/all.css" rel="stylesheet">
+    @yield("styles")
 </head>
 <body>
 <div class="container">
@@ -14,6 +22,6 @@
         @yield("content")
     </div>
 </div>
-<script src="/js/all.js"></script>
+@yield("scripts")
 </body>
 </html>

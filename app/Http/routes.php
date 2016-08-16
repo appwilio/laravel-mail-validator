@@ -12,11 +12,16 @@
 */
 
 Route::get('/', function () {
-    return redirect()->route("upload.form");
+    return redirect()->route("email.index");
 });
 
 
 Route::group(["prefix" => "upload"], function () {
     Route::get('/', ["as" => "upload.form", "uses" => "UploadController@showForm"]);
     Route::post('/', "UploadController@doUpload");
+});
+
+Route::group(["prefix" => "email"], function () {
+    Route::get('/', ["as" => "email.index", "uses" => "EmailController@index"]);
+    Route::get('/paginate',  ["as" => "email.paginate", "uses" => "EmailController@paginate"]);
 });
