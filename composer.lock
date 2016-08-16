@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f83b5a043d2f42932d40ec508cf01de6",
-    "content-hash": "c4e0bdd3751a07351cc6162da2ca1e7f",
+    "hash": "d7340064be1c73300013c2f4db90522b",
+    "content-hash": "099125758f3472a1ddc27bc43683612d",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -492,6 +492,58 @@
                 "laravel"
             ],
             "time": "2016-08-10 12:23:59"
+        },
+        {
+            "name": "lavoiesl/smtp-email-validator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lavoiesl/smtp-email-validator.git",
+                "reference": "039b4f3ec13eb76fe4d66b9b3af288a48f46fbb1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lavoiesl/smtp-email-validator/zipball/039b4f3ec13eb76fe4d66b9b3af288a48f46fbb1",
+                "reference": "039b4f3ec13eb76fe4d66b9b3af288a48f46fbb1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Lavoiesl\\Validation\\Email\\SMTP": "src",
+                    "Lavoiesl\\Validation\\Email\\SMTP\\Test": "test"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "CC-BY-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sébastien Lavoie",
+                    "email": "github@lavoie.sl",
+                    "homepage": "http://sebastien.lavoie.sl",
+                    "role": "Packager"
+                },
+                {
+                    "name": "bucabay",
+                    "email": "gabe@fijiwebdesign.com",
+                    "homepage": "http://www.fijiwebdesign.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP email validator using SMTP",
+            "homepage": "https://github.com/lavoiesl/smtp-email-validator",
+            "keywords": [
+                "email",
+                "php",
+                "smtp",
+                "validation"
+            ],
+            "time": "2012-07-09 06:44:36"
         },
         {
             "name": "league/flysystem",
@@ -3600,7 +3652,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "lavoiesl/smtp-email-validator": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
