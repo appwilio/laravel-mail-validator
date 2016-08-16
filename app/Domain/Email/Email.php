@@ -7,4 +7,7 @@ class Email extends Model
 {
     protected $fillable = ["address"];
 
+    public function validations(){
+        return $this->hasMany('App\Domain\Validation\Validation');
+    }
 }

@@ -10,6 +10,9 @@
             <th>
                 email
             </th>
+            <th>
+                validation
+            </th>
         </tr>
         </thead>
         <tbody id="js-emails-list">

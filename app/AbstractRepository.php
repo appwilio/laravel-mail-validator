@@ -93,6 +93,6 @@ abstract class AbstractRepository implements Repository
      * @return mixed
      */
     public function paginate() {
-        return $this->model->paginate($this->paginateSize);
+        return $this->model->with('validations')->paginate($this->paginateSize);
     }
 }

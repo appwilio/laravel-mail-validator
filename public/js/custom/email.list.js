@@ -35,10 +35,26 @@ var Template = function () {
                 content+="" +
                     "<tr>" +
                         "<td>"+item.id+"</td>"+
-                        "<td>"+item.address+"</td>"+
-                    "</tr>"
+                        "<td>"+item.address+"</td>" +
+                        "<td>";
+                    if("undefined" !== typeof(item.validations)) {
+                        content+="<ul>";
+                        for(var j = 0; j<item.validations.length; j++) {
+                            content+="<li>";
+                                content+= "<strong>"+item.validations[j].validator+":</strong>";
+                                    content+=" ";
+                                if(item.validations[j].valid) {
+                                    content+="valid";
+                                } else {
+                                    content+="<strong>not valid</strong> "+item.validations[j].message;
+                                }
+                            content+="</li>";
+                        }
+                        content+="</ul>";
+                    }
+                    content+="</td>" +
+                        "</tr>";
             }
-            console.log(content);
             $list.html(content);
         } else {
             $list.html("");

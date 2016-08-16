@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Contracts\EmailValidator;
 use App\Domain\Email\Email;
-use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,10 +36,16 @@ class ValidateEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        echo PHP_EOL;
-        var_dump($this->validator->getName());
-        echo PHP_EOL;
-        var_dump($this->validator->validate($this->email->address));
-        echo PHP_EOL;
+        $valid = new \App\Domain\Validation\Validation([
+            "validator" => $this->validator->getName()
+        ]);
+        try {
+            $check = $this->validator->validate($this->email->address);
+            $valid->valid = $check;
+        } catch (\Exception $e) {
+            $valid->valid = false;
+            $valid->message = $e->getMessage();
+        }
+        $this->email->validations()->save($valid);
     }
 }
