@@ -6,7 +6,8 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*"
+        "laravel/framework": "5.2.*",
+        "ddtraceweb/smtp-validator-email": "2.1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
