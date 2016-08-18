@@ -23,7 +23,7 @@ class EmailController extends Controller
         return view("list.emails");
     }
 
-    public function paginate(){
-        return $this->emails->paginate();
+    public function paginate($limit = null){
+        return $this->emails->paginate($limit);
     }
 }

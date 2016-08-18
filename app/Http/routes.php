@@ -23,5 +23,5 @@ Route::group(["prefix" => "upload"], function () {
 
 Route::group(["prefix" => "email"], function () {
     Route::get('/', ["as" => "email.index", "uses" => "EmailController@index"]);
-    Route::get('/paginate',  ["as" => "email.paginate", "uses" => "EmailController@paginate"]);
+    Route::get('/paginate/{limit?}',  ["as" => "email.paginate", "uses" => "EmailController@paginate"]);
 });

@@ -3,6 +3,7 @@
  */
 var Template = function () {
     var $total = $("#js-total"),
+        $limit = $("#js-limit"),
         $list = $("#js-emails-list"),
         $nextPage = $("#js-next"),
         $prevPage = $("#js-prev");
@@ -65,6 +66,13 @@ var Template = function () {
 var template = new Template();
 
 function updateData(url) {
+    var $limit = $("#js-limit");
+    if("undefined" !== typeof ($limit)) {
+        var limit = parseInt($limit.val());
+        if(limit>0) {
+            url += "/"+limit;
+        }
+    }
     $.ajax(
         {
             url: url,
@@ -83,7 +91,6 @@ $(function () {
     $(document).on("click", "#js-next, #js-prev", function (e) {
         e.preventDefault();
         var href = e.target.getAttribute("href");
-        console.log(href);
         if("#" != href) {
             updateData(href);
         }

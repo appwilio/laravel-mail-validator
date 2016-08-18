@@ -84,15 +84,22 @@ abstract class AbstractRepository implements Repository
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getManyBy($key, $value = null)
+    public function getManyBy($key, $value = null, $limit = null)
     {
-        return $this->model->where($key, $value)->get();
+        $query = $this->model->where($key, $value);
+        if($limit) {
+            $query->limit((int)$limit);
+        }
+        return $query->get();
     }
 
     /**
      * @return mixed
      */
-    public function paginate() {
-        return $this->model->with('validations')->paginate($this->paginateSize);
+    public function paginate($limit = null) {
+        if(null == $limit) {
+            $limit = $this->paginateSize;
+        }
+        return $this->model->with('validations')->paginate($limit);
     }
 }

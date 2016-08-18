@@ -1,6 +1,7 @@
 @extends('layout')
 
 @section('content')
+    <input type="text" id="js-limit" value="100">
     <table class="table">
         <thead>
         <tr>

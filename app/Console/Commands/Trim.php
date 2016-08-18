@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use App\Domain\Email\EmailRepository;
 use App\Jobs\ValidateEmail;
-use App\Validators\EguliasEmailValidator;
+use App\Validators\DdtracewebEmailValidator;
 use App\Validators\LavoieslEmailValidator;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class Temp extends Command
+class Trim extends Command
 {
     use DispatchesJobs;
     /**
@@ -17,14 +17,14 @@ class Temp extends Command
      *
      * @var string
      */
-    protected $signature = 't:temp';
+    protected $signature = 't:trim';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Helper command';
+    protected $description = 'Helper command to trim emails';
 
     /**
      * @type EmailRepository
@@ -45,7 +45,6 @@ class Temp extends Command
     private function showStats()
     {
         $memory = memory_get_peak_usage(true);
-
         $this->comment(sprintf('Выполнено за: %0.2f sec.', round(microtime(true) - LARAVEL_START, 3)));
         $this->comment(sprintf('Потреблено памяти: %0.2f MiB', $memory / (1024 * 1024)));
     }
@@ -57,26 +56,32 @@ class Temp extends Command
     public function handle()
     {
         $this->info("start");
-//        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
-//                $query->where("validator", "egulias");
-//            }
-//        )->limit(40000)->get();
-//
-//        foreach ($mails as $mail) {
-//            $this->dispatch(new ValidateEmail($mail, new EguliasEmailValidator()));
-//        }
-
-        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
-            $query->where("validator", "lavoiesl");
+        while(true) {
+            $emails = $this->emails->getManyBy("trimmed", false, 10000);
+            if($emails->isEmpty()) {
+                $this->info("no more");
+                break;
             }
-        )->limit(40000)->get();
-
-        foreach ($mails as $mail) {
-            $this->dispatch(new ValidateEmail($mail, new LavoieslEmailValidator()));
+            foreach ($emails as $email) {
+                $candidate = $email->address;
+                $address = sanitize_email($candidate);
+                $this->info($address);
+                if ($address) {
+                    $this->info("{$candidate} => {$address}");
+                    if($candidate !==$address) {
+                        $email->address = $address;
+                    }
+                    $email->trimmed = true;
+                    $email->save();
+                } else {
+                    $this->info("delete {$candidate}");
+                    $email->delete();
+                }
+                $this->showStats();
+                $this->info("go next");
+            }
         }
-
         $this->showStats();
         $this->info("done");
-
     }
 }
