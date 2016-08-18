@@ -57,14 +57,14 @@ class Temp extends Command
     public function handle()
     {
         $this->info("start");
-//        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
-//                $query->where("validator", "egulias");
-//            }
-//        )->limit(40000)->get();
-//
-//        foreach ($mails as $mail) {
-//            $this->dispatch(new ValidateEmail($mail, new EguliasEmailValidator()));
-//        }
+        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
+                $query->where("validator", "egulias");
+            }
+        )->limit(40000)->get();
+
+        foreach ($mails as $mail) {
+            $this->dispatch(new ValidateEmail($mail, new EguliasEmailValidator()));
+        }
 
         $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
             $query->where("validator", "lavoiesl");
