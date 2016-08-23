@@ -13,7 +13,7 @@ class DomainId extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->addColumn("integer", "domain_id");
+            $table->addColumn("integer", "domain_id")->default("0");
         });
     }
 

@@ -15,7 +15,7 @@ class Domains extends Migration
         Schema::create('domains', function (Blueprint $table) {
             $table->increments('id');
             $table->string("domain");
-            $table->boolean("valid");
+            $table->boolean("valid")->default(false);
             $table->timestamps();
         });
     }
