@@ -14,4 +14,9 @@ class Email extends Model
     public function validations(){
         return $this->hasMany('App\Domain\Validation\Validation');
     }
+
+    public function domain(){
+        $this->belongsTo('App\Domain\Email\Email');
+        return $this->hasMany('App\Domain\Validation\Validation');
+    }
 }
