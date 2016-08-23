@@ -9,6 +9,7 @@
         "laravel/framework": "5.2.*",
         "ddtraceweb/smtp-validator-email": "2.1.0",
         "lavoiesl/smtp-email-validator": "dev-master",
+        "barryvdh/laravel-async-queue":"0.4.x",
         "egulias/email-validator": "2.1.*"
     },
     "require-dev": {
@@ -22,7 +23,8 @@
     },
     "autoload": {
         "classmap": [
-            "database"
+            "database",
+            "lib"
         ],
         "psr-4": {
             "App\\": "app/"

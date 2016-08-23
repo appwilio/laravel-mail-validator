@@ -156,6 +156,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /**
+         * Async queue
+         */
+        Barryvdh\Queue\AsyncServiceProvider::class,
+
         /*
          * For development
          */
