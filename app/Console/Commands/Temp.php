@@ -2,9 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Email\Email;
 use App\Domain\Email\EmailRepository;
 use App\Jobs\ValidateEmail;
+use App\Lib\Validation\SMTP\SmtpValidation;
+use App\Lib\Validators\Smtp\CriticalSocketException;
+use App\Lib\Validators\Smtp\InformativeSocketException;
+use App\Lib\Validators\Smtp\SmtpSocket;
 use App\Validators\EguliasEmailValidator;
+use App\Validators\EguliasRFCEmailValidator;
 use App\Validators\LavoieslEmailValidator;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -57,26 +63,42 @@ class Temp extends Command
     public function handle()
     {
         $this->info("start");
-        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
-                $query->where("validator", "egulias");
+
+//        $smtp = new SmtpSocket();
+//        $valid = "unknown";
+//        try {
+//            $valid = $smtp->setHost("85.143.211.171")
+//                ->setPort("2525")
+//                ->setAuthorises(true)
+//                ->setLogin("uradvd85@gmail.com")
+//                ->setPassword("yWsHlRjhzvr")
+//                ->check("l_gusareva@ridan.kiev.ua", "uradvd85@gmail.com");
+//        } catch (CriticalSocketException $e) {
+//            echo "<pre>";
+//            var_dump($e->getMessage());
+//            echo "</pre>";
+//        } catch (InformativeSocketException $e) {
+//            echo "<pre>";
+//            var_dump($e->getMessage());
+//            echo "</pre>";
+//        }
+//        var_dump(["valid"=>$valid, "d"=>$smtp->getDebug()]);
+
+        $offset = 0;
+        $step = 10000;
+
+        while (true) {
+            $this->info("tik");
+            $emails = Email::skip($offset)->take($step)->get();
+
+            foreach ($emails as $email) {
+                $this->dispatch(new ValidateEmail($email, new EguliasRFCEmailValidator()));
             }
-        )->limit(40000)->get();
-
-        foreach ($mails as $mail) {
-            $this->dispatch(new ValidateEmail($mail, new EguliasEmailValidator()));
-        }
-
-        $mails = \App\Domain\Email\Email::whereDoesntHave("validations", function($query) {
-            $query->where("validator", "lavoiesl");
-            }
-        )->limit(40000)->get();
-
-        foreach ($mails as $mail) {
-            $this->dispatch(new ValidateEmail($mail, new LavoieslEmailValidator()));
+            $offset += $step;
+            $this->showStats();
         }
 
         $this->showStats();
         $this->info("done");
-
     }
 }

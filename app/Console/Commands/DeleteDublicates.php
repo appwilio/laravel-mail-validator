@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Email\Email;
 use App\Domain\Email\EmailRepository;
-use App\Jobs\ValidateEmail;
-use App\Validators\DdtracewebEmailValidator;
-use App\Validators\LavoieslEmailValidator;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -55,20 +53,26 @@ class DeleteDublicates extends Command
      */
     public function handle()
     {
+        $dublicates = 0;
         $this->info("start");
-        $collection = \App\Domain\Email\Email::groupBy("address")->havingRaw('COUNT(*) > 1')->get();
-        if ($collection->isEmpty()) {
-            $this->info("clear");
-        } else {
+        Email::groupBy("address")->havingRaw('COUNT(*) > 1')->chunk(100000, function ($collection) {
+            $this->showStats();
+            $this->info("chunk tik start");
             foreach ($collection as $email) {
-                $dulicates = \App\Domain\Email\Email::where("address", $email->address)->where('id', '<>', $email->id)->get();
+                $this->info("tik {$email->id} {$email->address}");
+                $dulicates = Email::where("address", $email->address)->where('id', '<>', $email->id)->get();
+                $delets = 0;
                 foreach ($dulicates as $dulicate) {
                     $this->info("Drop {$dulicate->id} {$dulicate->address}");
+                    $delets += 1;
                     $dulicate->delete();
                 }
+                $this->info("deleted {$delets}");
             }
+            $this->info("chunk tik end");
             $this->showStats();
-            $this->info("done");
-        }
+        });
+        $this->showStats();
+        $this->info("done");
     }
 }

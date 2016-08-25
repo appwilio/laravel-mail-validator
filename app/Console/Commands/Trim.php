@@ -56,16 +56,17 @@ class Trim extends Command
     public function handle()
     {
         $this->info("start");
+        $droped = 0;
         while(true) {
             $emails = $this->emails->getManyBy("trimmed", false, 10000);
             if($emails->isEmpty()) {
                 $this->info("no more");
                 break;
             }
+            $this->info("tik");
             foreach ($emails as $email) {
                 $candidate = $email->address;
                 $address = sanitize_email($candidate);
-                $this->info($address);
                 if ($address) {
                     $this->info("{$candidate} => {$address}");
                     if($candidate !==$address) {
@@ -74,13 +75,12 @@ class Trim extends Command
                     $email->trimmed = true;
                     $email->save();
                 } else {
-                    $this->info("delete {$candidate}");
+                    $droped+=1;
                     $email->delete();
                 }
-                $this->showStats();
-                $this->info("go next");
             }
         }
+        $this->info("droped {$droped}");
         $this->showStats();
         $this->info("done");
     }

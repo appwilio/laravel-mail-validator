@@ -13,7 +13,7 @@ class EmailTrimmedFlag extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->addColumn("integer", "trimmed");
+            $table->addColumn("boolean", "trimmed")->default(false);
         });
     }
 
