@@ -20,7 +20,7 @@ class SplitDomain extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Split domains';
 
     /**
      * Create a new command instance.
