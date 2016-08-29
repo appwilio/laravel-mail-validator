@@ -15,4 +15,8 @@ class Domain extends Model
     public function emails() {
         return $this->hasMany('App\Domain\Email\Email');
     }
+
+    public function validations() {
+        return $this->hasMany('App\Domain\Validation\DomainValidation');
+    }
 }
