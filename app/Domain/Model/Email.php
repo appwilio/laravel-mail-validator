@@ -1,5 +1,5 @@
 <?php
-namespace App\Domain\Email;
+namespace App\Domain\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,10 +12,10 @@ class Email extends Model
     ];
 
     public function validations(){
-        return $this->hasMany('App\Domain\Validation\Validation');
+        return $this->hasMany('App\Domain\Model\EmailValidation');
     }
 
     public function domain(){
-        return $this->belongsTo('App\Domain\Email\Email');
+        return $this->belongsTo('App\Domain\Model\Email');
     }
 }

@@ -6,9 +6,10 @@
  * Time: 15:46
  */
 
-namespace App\Domain\Email;
+namespace App\Domain\Repository;
 
 use App\AbstractRepository;
+use App\Domain\Model\Email;
 
 class EmailRepository extends AbstractRepository
 {

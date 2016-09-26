@@ -58,7 +58,7 @@ abstract class AbstractRepository implements Repository
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function find($id)
+    public function findById($id)
     {
         return $this->model->newQuery()->findOrFail($id);
     }

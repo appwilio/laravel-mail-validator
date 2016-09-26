@@ -1,18 +1,20 @@
 <?php
-namespace App\Domain\Validation;
+/**
+ * Created by PhpStorm.
+ * User: m
+ * Date: 26.09.16
+ * Time: 14:15
+ */
+
+namespace App\Domain\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Validation extends Model
+class AbstractValidation extends Model
 {
     protected $fillable = ["validator", "valid", "message"];
 
     protected $casts = [
         'valid' => 'boolean'
     ];
-
-    public function email() {
-        $this->belongsTo('App\Domain\Email\Email');
-    }
 }
-

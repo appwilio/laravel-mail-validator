@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Domain;
+namespace App\Domain\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,10 +13,10 @@ class Domain extends Model
     ];
 
     public function emails() {
-        return $this->hasMany('App\Domain\Email\Email');
+        return $this->hasMany('App\Domain\Model\Email');
     }
 
     public function validations() {
-        return $this->hasMany('App\Domain\Validation\DomainValidation');
+        return $this->hasMany('App\Domain\Model\DomainValidation');
     }
 }
