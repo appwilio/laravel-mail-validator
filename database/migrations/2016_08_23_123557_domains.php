@@ -5,6 +5,12 @@ use Illuminate\Database\Migrations\Migration;
 
 class Domains extends Migration
 {
+    protected $table;
+
+    public function __construct()
+    {
+        $this->table = (new \App\Domain\Model\Domain())->getTable();
+    }
     /**
      * Run the migrations.
      *
@@ -12,7 +18,7 @@ class Domains extends Migration
      */
     public function up()
     {
-        Schema::create('domains', function (Blueprint $table) {
+        Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
             $table->string("domain");
             $table->boolean("valid")->default(false);
@@ -27,6 +33,6 @@ class Domains extends Migration
      */
     public function down()
     {
-        Schema::drop('domains');
+        Schema::drop($this->table);
     }
 }

@@ -5,6 +5,13 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateEmailTable extends Migration
 {
+    protected $table;
+
+    public function __construct()
+    {
+        $this->table = (new \App\Domain\Model\Email())->getTable();
+    }
+
     /**
      * Run the migrations.
      *
@@ -12,9 +19,12 @@ class CreateEmailTable extends Migration
      */
     public function up()
     {
-        Schema::create('emails', function (Blueprint $table) {
+        Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
             $table->string("address");
+            $table->boolean("trimmed")->default(false);
+            $table->integer("domain_id")->default(0);
+            $table->string("import")->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +36,6 @@ class CreateEmailTable extends Migration
      */
     public function down()
     {
-        Schema::drop('emails');
+        Schema::drop($this->table);
     }
 }

@@ -5,6 +5,12 @@ use Illuminate\Database\Migrations\Migration;
 
 class DomainValidations extends Migration
 {
+    protected $table;
+
+    public function __construct()
+    {
+        $this->table = (new \App\Domain\Model\DomainValidation())->getTable();
+    }
     /**
      * Run the migrations.
      *
@@ -12,7 +18,7 @@ class DomainValidations extends Migration
      */
     public function up()
     {
-        Schema::create('domain_validations', function (Blueprint $table) {
+        Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
              $table->unsignedInteger("domain_id");
             $table->string("validator");
@@ -29,6 +35,6 @@ class DomainValidations extends Migration
      */
     public function down()
     {
-        Schema::drop('domain_validations');
+        Schema::drop($this->table);
     }
 }
