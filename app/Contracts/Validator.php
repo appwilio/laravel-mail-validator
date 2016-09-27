@@ -9,7 +9,7 @@
 namespace App\Contracts;
 
 
-interface EmailValidator
+interface Validator
 {
     /**
      * @return string
@@ -17,8 +17,8 @@ interface EmailValidator
     function getName();
 
     /**
-     * @param string $email
+     * @param string $value
      * @return bool
      */
-    function validate($email);
+    function validate($value);
 }

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Domain\Domain;
+use App\Domain\Model\Domain;
 use File;
 use Illuminate\Console\Command;
 
@@ -60,7 +60,11 @@ class ExportCsv extends Command
                     /**
                      * @var $list \Illuminate\Support\Collection
                      */
-                    $list = $domain->load("emails")->emails()->distinct()->orderBy("address")->pluck("address");
+                    $list = $domain->load("emails")->emails()->where("import", "max")->distinct()->orderBy("address")->pluck("address");
+		    if($list->count()==0) {
+			$this->info("skip");
+		    	continue;
+		    }
                     if($list->count() < $this->vaultLimit) {
                         File::append(public_path()."/csv/{$this->vaultName}.csv", implode(PHP_EOL, $list->toArray()));
                     } else {

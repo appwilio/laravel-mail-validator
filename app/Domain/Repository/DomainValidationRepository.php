@@ -8,13 +8,14 @@
 
 namespace App\Domain\Repository;
 
-use App\Domain\Model\Domain;
+use App\Contracts\Validator;
+use App\Domain\Model\DomainValidation;
 
-class DomainRepository extends AbstractRepository
+class DomainValidationRepository extends AbstractRepository
 {
     protected function getModelClass()
     {
-        return Domain::class;
+        return DomainValidation::class;
     }
 
 }

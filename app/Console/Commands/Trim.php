@@ -2,10 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Email\EmailRepository;
-use App\Jobs\ValidateEmail;
-use App\Validators\DdtracewebEmailValidator;
-use App\Validators\LavoieslEmailValidator;
+use App\Domain\Repository\EmailRepository;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 

@@ -2,18 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Email\Email;
-use App\Domain\Email\EmailRepository;
-use App\Jobs\ValidateEmail;
-use App\Lib\Validation\SMTP\SmtpValidation;
-use App\Lib\Validators\Smtp\CriticalSocketException;
-use App\Lib\Validators\Smtp\InformativeSocketException;
-use App\Lib\Validators\Smtp\SmtpSocket;
-use App\Validators\EguliasEmailValidator;
-use App\Validators\EguliasRFCEmailValidator;
-use App\Validators\LavoieslEmailValidator;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\DB;
 
 class Temp extends Command
 {
@@ -32,22 +24,6 @@ class Temp extends Command
      */
     protected $description = 'Helper command';
 
-    /**
-     * @type EmailRepository
-     */
-    protected $emails;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(EmailRepository $emails)
-    {
-        parent::__construct();
-        $this->emails = $emails;
-    }
-
     private function showStats()
     {
         $memory = memory_get_peak_usage(true);
@@ -58,14 +34,65 @@ class Temp extends Command
 
     /**
      * Execute the console command.
-     *
      */
     public function handle()
     {
         $this->info("start");
+        /**
+         * @var $emails Builder
+         */
+
+//        $domainValidators = config("validators.domain");
+//        foreach ($domainValidators as $validatorClass) {
+//
+//        }
+//        array_map(function($validatorClass){
+//            /**
+//             * @var $validator Validator
+//             */
+//            $validator = new $validatorClass();
+//            return [
+//                "key" => $validator->getName(),
+//                "valid" => Cache::get(prefix_valid($validatorClass), 0),
+//                "invalid" => Cache::get(prefix_invalid($validatorClass), 0),
+//                "pending" => Cache::get(prefix_pending($validatorClass), 0)
+//            ];
+//
+
+//        $emails = DB::select('SELECT dv.valid as `valid`, count(*) as `count` FROM emails e JOIN domains d  ON e.domain_id = d.id LEFT JOIN domain_validations dv ON d.id = dv.domain_id and dv.validator = :validator GROUP BY dv.valid;', ["validator" => "openrelay"]);
+//        dd($emails);
+//        $count = 0;
+//        $smtp = new SmtpSocket();
+//        $smtp->setPort("25");
+//        Domain::chunk(1000, function ($domains) use (&$count, $smtp) {
+//            $count++;
+//            $this->info("tik {$count}");
+//            foreach ($domains as $domain) {
+//                $domain->validations()->save(new DomainValidation([
+//                    "validator" => "A",
+//                    "valid" => checkdnsrr($domain->domain, 'A')
+//                ]));
+//                 $domain->validations()->save(new DomainValidation([
+//                    "validator" => "MX",
+//                    "valid" => checkdnsrr($domain->domain, 'MX')
+//                ]));
+//                try {
+//                    $valid = !($smtp->setHost($domain->domain)->check("botn8@yandex.ru", "artarn@appwili.com"));
+//                } catch (\Exception $e) {
+//                    $valid = true;
+//                }
+//
+//                $domain->validations()->save(new DomainValidation([
+//                    "validator" => "openrelay",
+//                    "valid" => $valid
+//                ]));
+//            }
+//        });
 
 //        $smtp = new SmtpSocket();
-//        $valid = "unknown";
+//        $valid = $smtp->setHost("85.143.211.171")->setPort("2525")->check("l_gusareva@ridan.kiev.ua", "uradvd85@gmail.com");;
+//        var_dump($valid);
+//
 //        try {
 //            $valid = $smtp->setHost("85.143.211.171")
 //                ->setPort("2525")
@@ -84,21 +111,9 @@ class Temp extends Command
 //        }
 //        var_dump(["valid"=>$valid, "d"=>$smtp->getDebug()]);
 
-        $offset = 0;
-        $step = 10000;
-
-        while (true) {
-            $this->info("tik");
-            $emails = Email::skip($offset)->take($step)->get();
-
-            foreach ($emails as $email) {
-                $this->dispatch(new ValidateEmail($email, new EguliasRFCEmailValidator()));
-            }
-            $offset += $step;
-            $this->showStats();
-        }
 
         $this->showStats();
         $this->info("done");
+        die(0);
     }
 }

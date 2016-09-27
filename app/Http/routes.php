@@ -15,6 +15,10 @@ Route::get('/', function () {
     return redirect()->route("email.index");
 });
 
+Route::group(["prefix" => "validators"], function () {
+    Route::get('/', ["as" => "validator.form", "uses" => "ValidatorsController@showForm"]);
+    Route::get('/list', ["as" => "validator.form", "uses" => "ValidatorsController@validatorsList"]);
+});
 
 Route::group(["prefix" => "upload"], function () {
     Route::get('/', ["as" => "upload.form", "uses" => "UploadController@showForm"]);

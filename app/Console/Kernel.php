@@ -18,10 +18,9 @@ class Kernel extends ConsoleKernel
         Commands\Temp::class,
         Commands\Trim::class,
         Commands\SplitDomain::class,
-        Commands\ValidateDomains::class,
-        Commands\RFCValidationJobs::class,
         Commands\ExportCsv::class,
-        Commands\DeleteDublicates::class
+        Commands\DeleteDublicates::class,
+        Commands\ResultCache::class
     ];
 
     /**

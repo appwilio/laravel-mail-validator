@@ -18,3 +18,19 @@ function sanitize_email($email) {
         return false;
     }
 }
+
+function prefix($value, $prefix) {
+    return "{$prefix}_{$value}";
+}
+
+function prefix_valid($value){
+    return prefix($value, config("validators.valid", "valid"));
+}
+
+function prefix_invalid($value){
+    return prefix($value, config("validators.valid", "invalid"));
+}
+
+function prefix_pending($value){
+    return prefix($value, config("validators.valid", "pending"));
+}

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Domain\Domain;
-use App\Domain\Email\Email;
+use App\Domain\Model\Domain;
+use App\Domain\Model\Email;
 use Illuminate\Console\Command;
 
 class SplitDomain extends Command
@@ -47,7 +47,7 @@ class SplitDomain extends Command
                 $domain = strtolower(array_pop($split));
                 $domain_exist = Domain::where("domain", $domain)->first();
                 if (null == $domain_exist) {
-                    $new_domain = new \App\Domain\Domain\Domain([
+                    $new_domain = new Domain([
                         "domain" => $domain
                     ]);
                     $new_domain->save();

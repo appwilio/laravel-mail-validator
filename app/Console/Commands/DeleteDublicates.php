@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Email\Email;
-use App\Domain\Email\EmailRepository;
+use App\Domain\Model\Email;
+use App\Domain\Repository\EmailRepository;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 

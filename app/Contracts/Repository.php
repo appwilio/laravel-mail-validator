@@ -22,7 +22,7 @@ interface Repository
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function find($id);
+    public function findById($id);
 
     /**
      * Find a single entity by key value

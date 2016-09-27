@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Validators;
+namespace App\Validators\Email;
 
+use App\Contracts\Validator;
 use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\DNSCheckValidation;
-use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
 /**
@@ -13,7 +12,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
  * Date: 16.08.16
  * Time: 14:03
  */
-class EguliasRFCEmailValidator  implements \App\Contracts\EmailValidator
+class EguliasRFCEmailValidator  implements Validator
 {
 
     protected $validator;
