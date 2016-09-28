@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Contracts\Validator;
-use App\Domain\Model\Email;
 use Cache;
 use DB;
 use Illuminate\Console\Command;
@@ -40,11 +39,11 @@ class ResultCache extends Command
     public function handle()
     {
         $this->info("start");
-//        foreach ($domainValidators as config("validators.domain")) {
-//            $this->recalculateDomainValidation($validatorClass);
-//        }
-        foreach (config("validators.email") as $validator) {
-            $this->recalculateEmailValidations($validator);
+        foreach (config("validators.domain") as $validatorClass) {
+            $this->recalculateDomainValidation($validatorClass);
+        }
+        foreach (config("validators.email") as $validatorClass) {
+            $this->recalculateEmailValidations($validatorClass);
         }
         $this->info("done");
     }

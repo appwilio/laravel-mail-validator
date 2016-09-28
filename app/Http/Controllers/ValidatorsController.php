@@ -3,23 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Validator;
-use App\Domain\Repository\EmailRepository;
 use Cache;
 
 class ValidatorsController extends Controller
 {
-    /**
-     * @var EmailRepository
-     */
-    protected $domainValidations;
-
     public function index() {
-        return view("list.emails");
+        return view("list.validators");
     }
 
     public function validatorsList(){
-
-        $domainValidators = config("validators.domain");
+        $validators = array_merge(config("validators.domain"), config("validators.email"));
         return array_map(function($validatorClass){
             /**
              * @var $validator Validator
@@ -31,6 +24,6 @@ class ValidatorsController extends Controller
                 "invalid" => Cache::get(prefix_invalid($validatorClass), 0),
                 "pending" => Cache::get(prefix_pending($validatorClass), 0)
             ];
-        }, $domainValidators);
+        }, $validators);
     }
 }
