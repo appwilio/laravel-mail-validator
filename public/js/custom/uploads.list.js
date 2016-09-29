@@ -1,8 +1,8 @@
 /**
  * Created by m on 16.08.16.
  */
-var ValidationsList = function () {
-    var $list = $("#js-validators-list");
+var uploadsList = function () {
+    var $list = $("#js-uploads-list");
 
     this.update = function (d) {
 
@@ -14,10 +14,10 @@ var ValidationsList = function () {
                 content += "" +
                     "<tr>" +
                     "<td>" + i + "</td>" +
-                    "<td>" + item.key + "</td>" +
-                    "<td>" + item.valid + "</td>" +
-                    "<td>" + item.invalid + "</td>" +
-                    "<td>" + item.pending + "</td>" +
+                    "<td>" + item.original_name + "</td>" +
+                    "<td>" + item.created_at + "</td>" +
+                    "<td>" + item.finished + "</td>" +
+                    "<td>" + item.updated_at + "</td>" +
                     "</tr>";
             }
             $list.html(content);
@@ -25,6 +25,7 @@ var ValidationsList = function () {
             $list.html("");
         }
     };
+
     this.updateData = function (url) {
         var self = this;
         $.ajax(
@@ -41,11 +42,13 @@ var ValidationsList = function () {
     }
 };
 
-var validationsList = new ValidationsList();
+var uploadList = new uploadsList();
+
+
 
 $(function () {
-    validationsList.updateData(validatorsListUrl);
+    uploadList.updateData(uploadsListUrl);
     setInterval(function (url) {
-        validationsList.updateData(url);
-    }, 10000, validatorsListUrl);
+        uploadList.updateData(url);
+    }, 10000, uploadsListUrl);
 });

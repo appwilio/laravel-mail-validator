@@ -7,10 +7,6 @@ use Cache;
 
 class ValidatorsController extends Controller
 {
-    public function index() {
-        return view("list.validators");
-    }
-
     public function validatorsList(){
         $validators = array_merge(config("validators.domain"), config("validators.email"));
         return array_map(function($validatorClass){

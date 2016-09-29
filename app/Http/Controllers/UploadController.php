@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Model\ImportFile;
+use App\Domain\Repository\ImportFileRepository;
 use App\Http\Requests\UploadRequest;
 use App\Jobs\ReadImportFile;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,8 +12,18 @@ class UploadController extends Controller
 {
     use DispatchesJobs;
 
-    public function index(){
-        return response()->json(config("import.directory"));
+    /**
+     * @var $importFiles ImportFileRepository
+     */
+    protected $importFiles;
+
+    public function __construct(ImportFileRepository $repository)
+    {
+        $this->importFiles = $repository;
+    }
+
+    public function uploadsList() {
+        return response()->json($this->importFiles->all());
     }
 
     public function doUpload(UploadRequest $request){
@@ -32,6 +43,6 @@ class UploadController extends Controller
             $this->dispatch((new ReadImportFile($importFile))->delay(100));
 
         }
-        return redirect()->back(200);
+        return redirect()->back();
     }
 }

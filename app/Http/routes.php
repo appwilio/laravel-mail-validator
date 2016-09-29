@@ -16,11 +16,10 @@ Route::get('/', function () {
 });
 
 Route::group(["prefix" => "validator"], function () {
-    Route::get('/', ["as" => "validator.index", "uses" => "ValidatorsController@index"]);
     Route::get('/list', ["as" => "validator.list", "uses" => "ValidatorsController@validatorsList"]);
 });
 
 Route::group(["prefix" => "upload"], function () {
-    Route::get('/', ["as" => "upload.index", "uses" => "UploadController@index"]);
+    Route::get('/list', ["as" => "upload.list", "uses" => "UploadController@uploadsList"]);
     Route::post('/', ["as" => "upload.do", "uses" => "UploadController@doUpload"]);
 });
