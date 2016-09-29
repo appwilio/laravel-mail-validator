@@ -23,7 +23,7 @@ class CreateEmailTable extends Migration
             $table->increments('id');
             $table->string("address");
             $table->boolean("trimmed")->default(false);
-            $table->unsignedInteger("domain_id")->default(0);
+            $table->unsignedInteger("domain_id")->nullable();
             $table->string("import")->nullable();
             $table->timestamps();
         });

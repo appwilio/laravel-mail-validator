@@ -10,7 +10,8 @@
         "ddtraceweb/smtp-validator-email": "2.1.0",
         "lavoiesl/smtp-email-validator": "dev-master",
         "barryvdh/laravel-async-queue":"0.4.x",
-        "egulias/email-validator": "2.1.*"
+        "egulias/email-validator": "2.1.*",
+        "league/csv": "^8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
