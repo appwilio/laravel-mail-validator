@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return redirect()->route("validator.index");
+    return view("index");
 });
 
 Route::group(["prefix" => "validator"], function () {
@@ -21,6 +21,6 @@ Route::group(["prefix" => "validator"], function () {
 });
 
 Route::group(["prefix" => "upload"], function () {
-    Route::get('/', ["as" => "upload.form", "uses" => "UploadController@showForm"]);
-    Route::post('/', "UploadController@doUpload");
+    Route::get('/', ["as" => "upload.index", "uses" => "UploadController@index"]);
+    Route::post('/', ["as" => "upload.do", "uses" => "UploadController@doUpload"]);
 });

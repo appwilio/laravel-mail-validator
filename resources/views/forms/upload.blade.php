@@ -1,7 +1,4 @@
 <div class="row">
-    @include("forms.errors")
-</div>
-<div class="row">
     <form method="post" enctype="multipart/form-data" role="form">
         {{ csrf_field() }}
         <div class="controls">

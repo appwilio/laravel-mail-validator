@@ -2,48 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Email\Email;
-use App\Domain\Email\EmailRepository;
+use App\Domain\Model\ImportFile;
 use App\Http\Requests\UploadRequest;
+use App\Jobs\ReadImportFile;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class UploadController extends Controller
 {
-    /**
-     * @type EmailRepository
-     */
-    protected $emails;
+    use DispatchesJobs;
 
-    public function __construct(EmailRepository $emails)
-    {
-        $this->emails = $emails;
-    }
-
-
-    public function showForm(){
-        return view('upload');
+    public function index(){
+        return response()->json(config("import.directory"));
     }
 
     public function doUpload(UploadRequest $request){
-        $file = $request->file("file")->openFile("r");
-        $add = 0;
-        while ($line = $file->fgetcsv(",")) {
-            $email = sanitize_email($line[0]);
-
-            if(!$email) {
-                continue;
-            }
-
-            if($this->emails->getFirstBy("address", $email)) {
-               continue;
-            }
-
-            $newEmail = new Email([
-                "address" => $line[0]
+        $file = $request->file("file");
+        if(null !== $file) {
+            $new_name = md5($file->getClientOriginalName().time()) . "." . $file->getClientOriginalExtension();
+            $importFile = new ImportFile([
+                "original_name" => $file->getClientOriginalName(),
+                "generated_name" => $new_name,
+                "lines_processed" => 0
             ]);
-            $newEmail->save();
 
-            $add++;
+            $importFile->save();
+
+            $file->move(config("import.directory"), $new_name);
+
+            $this->dispatch((new ReadImportFile($importFile))->delay(100));
+
         }
-        return redirect()->route("upload.form")->with("added", $add);
+        return redirect()->back(200);
     }
 }
