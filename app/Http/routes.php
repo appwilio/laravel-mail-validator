@@ -23,3 +23,8 @@ Route::group(["prefix" => "upload"], function () {
     Route::get('/list', ["as" => "upload.list", "uses" => "UploadController@uploadsList"]);
     Route::post('/', ["as" => "upload.do", "uses" => "UploadController@doUpload"]);
 });
+
+Route::group(["prefix" => "excludes"], function () {
+    Route::get('/list', ["as" => "excludes.list", "uses" => "ExcludeController@excludesList"]);
+    Route::post('/', ["as" => "excludes.create", "uses" => "ExcludeController@create"]);
+});

@@ -10,4 +10,7 @@
     <div class="row">
         @include('list.uploads')
     </div>
+    <div class="row">
+        @include('list.excludes')
+    </div>
 @endsection

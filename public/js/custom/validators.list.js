@@ -30,6 +30,7 @@ var ValidationsList = function () {
         $.ajax(
             {
                 url: url,
+                dataType: "json",
                 success: function (r) {
                     self.update(r);
                 },

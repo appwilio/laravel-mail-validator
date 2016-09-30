@@ -1,3 +1,4 @@
+<h2>Validators progress</h2>
 <table class="table">
     <thead>
     <tr>
