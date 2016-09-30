@@ -40,37 +40,61 @@ class ResultCache extends Command
     {
         $this->info("start");
         foreach (config("validators.domain") as $validatorClass) {
-            $this->recalculateDomainValidation($validatorClass);
+            $this->info("tik domain {$validatorClass}");
+            $this->recalculate($validatorClass, $this->domainValidations());
+
         }
         foreach (config("validators.email") as $validatorClass) {
-            $this->recalculateEmailValidations($validatorClass);
+            $this->info("tik email {$validatorClass}");
+            $this->recalculate($validatorClass, $this->emailValidations());
         }
         $this->info("done");
     }
 
-    private function recalculateDomainValidation($validatorClass) {
+    /**
+     * @return string SQL with variable :validator
+     */
+    protected function domainValidations()
+    {
+        return 'SELECT dv.valid AS `valid`, count(*) AS `count`  FROM emails e 
+                JOIN domains d  ON e.domain_id = d.id 
+                LEFT JOIN domain_validations dv ON d.id = dv.domain_id AND dv.validator = :validator 
+            GROUP BY dv.valid;';
+    }
+
+    /**
+     * @return string SQL with variable :validator
+     */
+    protected function emailValidations()
+    {
+        return 'SELECT ev.valid AS `valid`, count(*) AS `count`  FROM emails e 
+                LEFT JOIN email_validations ev ON e.id = ev.email_id AND ev.validator = :validator 
+            GROUP BY ev.valid;';
+    }
+
+    /**
+     * @param $validatorClass
+     * @param string $query
+     */
+    protected function recalculate($validatorClass, $query)
+    {
         /**
          * @var $validator Validator
          */
         $validator = new $validatorClass();
-        $this->info("tik {$validator->getName()}");
         $cacheTemplate = [
             "valid" => 0,
             "invalid" => 0,
             "pending" => 0
         ];
         $stat = DB::select(
-            'SELECT dv.valid as `valid`, count(*) as `count`  FROM emails e 
-                JOIN domains d  ON e.domain_id = d.id 
-                LEFT JOIN domain_validations dv ON d.id = dv.domain_id AND dv.validator = :validator 
-            GROUP BY dv.valid;',
+            $query,
             [
                 "validator" => $validator->getName()
             ]
         );
-
         foreach ($stat as $line) {
-            if(null === $line->valid) {
+            if (null === $line->valid) {
                 $cacheTemplate["pending"] = $line->count;
             } else {
                 switch ($line->valid) {
@@ -83,27 +107,22 @@ class ResultCache extends Command
                 }
             }
         }
+        $this->store($validatorClass, $cacheTemplate);
+    }
 
+    /**
+     * @param $validatorClass
+     * @param $cacheTemplate array [
+     *      "valid" => (int)
+     *      "invalid" => (int)
+     *      "pending" => (int)
+     * ]
+     */
+    protected function store($validatorClass, $cacheTemplate)
+    {
         Cache::forever(prefix_valid($validatorClass), $cacheTemplate["valid"]);
         Cache::forever(prefix_invalid($validatorClass), $cacheTemplate["invalid"]);
         Cache::forever(prefix_pending($validatorClass), $cacheTemplate["pending"]);
     }
 
-    private function recalculateEmailValidations($validatorClass){
-        /**
-         * @var $validator Validator
-         */
-        $validator = new $validatorClass();
-        $this->info("tik {$validator->getName()}");
-
-        $stat = DB::select(
-            'SELECT ev.valid as `valid`, count(*) as `count`  FROM emails e 
-                LEFT JOIN email_validations ev ON e.id = ev.email_id AND ev.validator = :validator 
-            GROUP BY ev.valid;',
-            [
-                "validator" => $validator->getName()
-            ]
-        );
-        dd($stat);
-    }
 }
