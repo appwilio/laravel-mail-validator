@@ -11,10 +11,16 @@ class Email extends Model
         'trimmed' => 'boolean'
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function validations(){
         return $this->hasMany('App\Domain\Model\EmailValidation');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function domain(){
         return $this->belongsTo('App\Domain\Model\Email');
     }

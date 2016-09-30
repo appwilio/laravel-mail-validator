@@ -4,10 +4,11 @@ namespace App\Jobs;
 
 use App\Contracts\Validator;
 use App\Domain\Model\Domain;
-use App\Domain\Model\EmailValidation;
+use App\Domain\Model\DomainValidation;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Cache;
 
 class ValidateDomain extends Job implements ShouldQueue
 {
@@ -41,16 +42,26 @@ class ValidateDomain extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $valid = new EmailValidation([
+        $valid = new DomainValidation([
             "validator" => $this->validator->getName()
         ]);
+
+        $class = get_class($this->validator);
+
         try {
-            $check = $this->validator->validate($this->domain->address);
+            $check = $this->validator->validate($this->domain->domain);
             $valid->valid = $check;
+
         } catch (\Exception $e) {
             $valid->valid = false;
             $valid->message = $e->getMessage();
         }
-        return $this->domain->validations()->save($valid);
+        if($valid->valid) {
+            Cache::increment(prefix_valid($class));
+        } else {
+            Cache::increment(prefix_invalid($class));
+        }
+        Cache::decrement(prefix_pending($class));
+        $this->domain->validations()->save($valid);
     }
 }

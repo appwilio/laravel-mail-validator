@@ -50,9 +50,6 @@ class CutDomain extends Job implements ShouldQueue
             $this->email->domain()->associate($new_domain);
         } else {
             $this->email->domain()->associate($domain_exist);
-            /**
-             * TODO: domain is valid?
-             */
         }
         $this->email->save();
     }

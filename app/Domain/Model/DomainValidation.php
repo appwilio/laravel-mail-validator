@@ -1,9 +1,8 @@
 <?php
 namespace App\Domain\Model;
 
-use Illuminate\Database\Eloquent\Model;
 
-class DomainValidation extends Model
+class DomainValidation extends AbstractValidation
 {
     protected $table = "domain_validations";
 

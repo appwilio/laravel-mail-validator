@@ -34,3 +34,19 @@ function prefix_invalid($value){
 function prefix_pending($value){
     return prefix($value, config("validators.valid", "pending"));
 }
+
+
+function validators_assoc($key) {
+    $result = [];
+    $validators = config("validators.{$key}");
+    if(is_array($validators)) {
+        foreach ($validators as $validatorClass) {
+            /**
+             * @var $validator \App\Contracts\Validator
+             */
+            $validator = new $validatorClass();
+            $result[$validator->getName()] = $validatorClass;
+        }
+    }
+    return $result;
+}

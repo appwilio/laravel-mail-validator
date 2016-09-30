@@ -48,18 +48,12 @@ class ValidateEmail extends Job implements ShouldQueue
 
         $class = get_class($this->validator);
 
-        Cache::decrement(prefix_pending($class));
 
         try {
             $check = $this->validator->validate($this->email->address);
             $valid->valid = $check;
 
-            if($check) {
-                Cache::increment(prefix_valid($class));
-            } else {
-                Cache::increment(prefix_invalid($class));
-            }
-            
+
         } catch (\Exception $e) {
 
             Cache::increment(prefix_invalid($class));
@@ -67,6 +61,12 @@ class ValidateEmail extends Job implements ShouldQueue
             $valid->valid = false;
             $valid->message = $e->getMessage();
         }
+        if ($valid->valid) {
+            Cache::increment(prefix_valid($class));
+        } else {
+            Cache::increment(prefix_invalid($class));
+        }
+        Cache::decrement(prefix_pending($class));
         $this->email->validations()->save($valid);
     }
 }
