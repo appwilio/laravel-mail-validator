@@ -3,21 +3,20 @@
 namespace App\Jobs;
 
 use App\Contracts\Validator;
-use App\Domain\Model\Email;
+use App\Domain\Model\Domain;
 use App\Domain\Model\EmailValidation;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Cache;
 
-class ValidateEmail extends Job implements ShouldQueue
+class ValidateDomain extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
     /**
-     * @type Email
+     * @type Domain
      */
-    protected $email;
+    protected $domain;
     /**
      * @var Validator
      */
@@ -28,9 +27,9 @@ class ValidateEmail extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Email $email, Validator $validator)
+    public function __construct(Domain $domain, Validator $validator)
     {
-        $this->email = $email;
+        $this->domain = $domain;
 
         $this->validator = $validator;
     }
@@ -45,28 +44,13 @@ class ValidateEmail extends Job implements ShouldQueue
         $valid = new EmailValidation([
             "validator" => $this->validator->getName()
         ]);
-
-        $class = get_class($this->validator);
-
-        Cache::decrement(prefix_pending($class));
-
         try {
-            $check = $this->validator->validate($this->email->address);
+            $check = $this->validator->validate($this->domain->address);
             $valid->valid = $check;
-
-            if($check) {
-                Cache::increment(prefix_valid($class));
-            } else {
-                Cache::increment(prefix_invalid($class));
-            }
-            
         } catch (\Exception $e) {
-
-            Cache::increment(prefix_invalid($class));
-
             $valid->valid = false;
             $valid->message = $e->getMessage();
         }
-        $this->email->validations()->save($valid);
+        return $this->domain->validations()->save($valid);
     }
 }

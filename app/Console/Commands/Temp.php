@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class Temp extends Command
 {
@@ -38,6 +38,8 @@ class Temp extends Command
     public function handle()
     {
         $this->info("start");
+
+        dd(Cache::get("test"));
         /**
          * @var $emails Builder
          */

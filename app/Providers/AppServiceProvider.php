@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+
+use App\Domain\Model\Email;
+use App\Jobs\CutDomain;
+use App\Jobs\EmailValidationJobs;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    use DispatchesJobs;
     /**
      * Bootstrap any application services.
      *
@@ -13,7 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Email::created(function (Email $email) {
+            dispatch(new CutDomain($email));
+            dispatch(new EmailValidationJobs($email));
+        });
     }
 
     /**
@@ -23,6 +32,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

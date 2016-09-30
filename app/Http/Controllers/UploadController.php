@@ -40,7 +40,7 @@ class UploadController extends Controller
 
             $file->move(config("import.directory"), $new_name);
 
-            $this->dispatch((new ReadImportFile($importFile))->delay(100));
+            $this->dispatch((new ReadImportFile($importFile))->delay(1));
 
         }
         return redirect()->back();
