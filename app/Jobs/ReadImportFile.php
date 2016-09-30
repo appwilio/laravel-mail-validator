@@ -54,6 +54,7 @@ class ReadImportFile extends Job implements ShouldQueue
             return $file->save();
 
         });
-
+        $file->finished = true;
+        $file->save();
     }
 }
