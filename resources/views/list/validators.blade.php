@@ -6,6 +6,9 @@
             id
         </th>
         <th>
+           Type
+        </th>
+        <th>
             Validator
         </th>
         <th>

@@ -14,7 +14,8 @@ var ValidationsList = function () {
                 content += "" +
                     "<tr>" +
                     "<td>" + i + "</td>" +
-                    "<td>" + item.key + "</td>" +
+                    "<td>" + item.type + "</td>" +
+                    "<td>" + item.key + " </td>" +
                     "<td>" + item.valid + "</td>" +
                     "<td>" + item.invalid + "</td>" +
                     "<td>" + item.pending + "</td>" +
