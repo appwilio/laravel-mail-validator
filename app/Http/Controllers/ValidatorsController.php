@@ -38,4 +38,8 @@ class ValidatorsController extends Controller
                 }, config("validators.email"))
             );
     }
+
+    public function havePending(){
+        return response()->json(validationPending());
+    }
 }

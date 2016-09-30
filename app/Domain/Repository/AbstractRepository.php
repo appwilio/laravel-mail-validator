@@ -44,7 +44,7 @@ abstract class AbstractRepository implements Repository
      *
      * @return \Illuminate\Database\Eloquent\Collection|array
      */
-    public function all($columns = ['*'], $orderBy = 'created_at', $sort = 'DESC')
+    public function all($columns = ['*'], $orderBy = 'id', $sort = 'DESC')
     {
         return $this->model->orderBy($orderBy, $sort)->get($columns);
     }

@@ -50,3 +50,12 @@ function validators_assoc($key) {
     }
     return $result;
 }
+
+function validationPending() {
+    $validators = array_merge(config("validators.domain"),  config("validators.email"));
+    $pending = 0;
+    foreach ($validators as $validatorClass) {
+        $pending += Cache::get(prefix_pending($validatorClass), 0);
+    }
+    return $pending > 0;
+}

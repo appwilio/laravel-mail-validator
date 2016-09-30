@@ -51,7 +51,6 @@ class ExportCsv extends Command
     public function handle()
     {
         $this->info("start");
-        File::put(public_path()."/csv/temp", 1);
         Domain::where("valid", true)->chunk(1, function ($domains) {
             $this->info("tik");
             foreach ($domains as $domain) {

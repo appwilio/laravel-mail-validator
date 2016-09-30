@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::group(["prefix" => "validator"], function () {
     Route::get('/list', ["as" => "validator.list", "uses" => "ValidatorsController@validatorsList"]);
+    Route::get('/pending', ["as" => "validator.pending", "uses" => "ValidatorsController@havePending"]);
 });
 
 Route::group(["prefix" => "upload"], function () {
@@ -27,4 +28,9 @@ Route::group(["prefix" => "upload"], function () {
 Route::group(["prefix" => "excludes"], function () {
     Route::get('/list', ["as" => "excludes.list", "uses" => "ExcludeController@excludesList"]);
     Route::post('/', ["as" => "excludes.create", "uses" => "ExcludeController@create"]);
+});
+
+Route::group(["prefix" => "export"], function () {
+    Route::get('/list', ["as" => "export.list", "uses" => "ExportController@exportsList"]);
+    Route::get('/make', ["as" => "export.make", "uses" => "ExportController@doExport"]);
 });

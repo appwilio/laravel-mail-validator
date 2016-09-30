@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Model\Domain;
+use App\Domain\Model\Email;
+use App\Domain\Model\Exclude;
+use App\Domain\Repository\ExcludeRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Cache;
 
@@ -39,7 +44,42 @@ class Temp extends Command
     {
         $this->info("start");
 
-        dd(Cache::get("test"));
+        $emailExcludes = Exclude::where("type", Exclude::PREFIX_EXCLUDE)->get(["value"])->pluck("value");
+        $domainsExcludes = Exclude::where("type", Exclude::SUFFIX_EXCLUDE)->get(["value"])->pluck("value");
+
+        $domainsRequest = (new Domain)->newQuery();
+
+        foreach ($domainsExcludes as $exclude) {
+            $domainsRequest->where("domain", "NOT LIKE", "%{$exclude}");
+        }
+
+
+
+        $domainsRequest->chunk(1, function ($domains) use (&$a, $emailExcludes) {
+            /**
+             * @var $domain Domain
+             */
+            foreach ($domains as $domain) {
+                /**
+                 * @var $failed HasMany
+                 */
+                $failed = $domain->validations()->where("valid", false)->first();
+                if (null == $failed) {
+                    /**
+                     * @var $emailsQuery Builder
+                     */
+                    $emailsQuery = $domain->load("emails")->emails();
+                    foreach ($emailExcludes as $exclude) {
+                            $emailsQuery->where("address", "NOT LIKE", "{$exclude}%");
+                    }
+                    $list = $emailsQuery->get(["address"])->pluck("address");
+                    var_dump($list);
+                }
+            }
+//            foreach ($domains as $domain) {
+//                $list = $domain->load("emails")->emails();
+//            }
+        });
         /**
          * @var $emails Builder
          */
@@ -90,28 +130,6 @@ class Temp extends Command
 //                ]));
 //            }
 //        });
-
-//        $smtp = new SmtpSocket();
-//        $valid = $smtp->setHost("85.143.211.171")->setPort("2525")->check("l_gusareva@ridan.kiev.ua", "uradvd85@gmail.com");;
-//        var_dump($valid);
-//
-//        try {
-//            $valid = $smtp->setHost("85.143.211.171")
-//                ->setPort("2525")
-//                ->setAuthorises(true)
-//                ->setLogin("uradvd85@gmail.com")
-//                ->setPassword("yWsHlRjhzvr")
-//                ->check("l_gusareva@ridan.kiev.ua", "uradvd85@gmail.com");
-//        } catch (CriticalSocketException $e) {
-//            echo "<pre>";
-//            var_dump($e->getMessage());
-//            echo "</pre>";
-//        } catch (InformativeSocketException $e) {
-//            echo "<pre>";
-//            var_dump($e->getMessage());
-//            echo "</pre>";
-//        }
-//        var_dump(["valid"=>$valid, "d"=>$smtp->getDebug()]);
 
 
         $this->showStats();

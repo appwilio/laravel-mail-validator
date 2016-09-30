@@ -13,4 +13,7 @@
     <div class="row">
         @include('list.excludes')
     </div>
+    <div class="row">
+        @include('list.exports')
+    </div>
 @endsection
