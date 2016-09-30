@@ -42,4 +42,10 @@ class ExcludeController extends Controller
             $exclude->save()
         );
     }
+    
+    public function drop($id) {
+        Exclude::find($id)->delete();
+        return redirect()->back();
+    }
+
 }

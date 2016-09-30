@@ -19,11 +19,17 @@ class ExcludeRepository extends AbstractRepository
     }
 
     public function getPrefixExcludes() {
-        return $this->getManyBy("type", Exclude::PREFIX_EXCLUDE);
+        return $this->getManyBy("type", Exclude::PREFIX_EXCLUDE)->map(function($item) {
+            $item->url = route("excludes.drop", ["id"=>$item->id]);
+            return $item;
+        });
     }
 
     public function getSuffixExclude() {
-        return $this->getManyBy("type", Exclude::SUFFIX_EXCLUDE);
+        return $this->getManyBy("type", Exclude::SUFFIX_EXCLUDE)->map(function($item) {
+            $item->url = route("excludes.drop", ["id"=>$item->id]);
+            return $item;
+        });
     }
 
     public function getTypes(){

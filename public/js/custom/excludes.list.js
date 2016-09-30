@@ -29,6 +29,7 @@ var ExcludeList = function () {
                     content += "" +
                         "<tr>" +
                         "<td>" + exclude.preTemplate + '<strong>' + item.value + '</strong>' + exclude.postTemplate + "</td>" +
+                        "<td><a href='" + item.url + "'>delete</a></td>" +
                         "</tr>";
                 }
                 $list.html(content);
