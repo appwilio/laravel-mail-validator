@@ -56,8 +56,7 @@ class ResultCache extends Command
      */
     protected function domainValidations()
     {
-        return 'SELECT dv.valid AS `valid`, count(*) AS `count`  FROM emails e 
-                JOIN domains d  ON e.domain_id = d.id 
+        return 'SELECT dv.valid AS `valid`, count(*) AS `count` FROM domains d 
                 LEFT JOIN domain_validations dv ON d.id = dv.domain_id AND dv.validator = :validator 
             GROUP BY dv.valid;';
     }
