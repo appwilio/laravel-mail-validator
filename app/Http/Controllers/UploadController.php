@@ -23,7 +23,7 @@ class UploadController extends Controller
     }
 
     public function uploadsList() {
-        return response()->json($this->importFiles->all());
+        return response()->json($this->importFiles->allTransformed($this->importFiles->importTransformer()));
     }
 
     public function doUpload(UploadRequest $request){

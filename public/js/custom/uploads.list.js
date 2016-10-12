@@ -13,11 +13,12 @@ var uploadsList = function () {
                 var item = d[i];
                 content += "" +
                     "<tr>" +
-                    "<td>" + i + "</td>" +
+                    "<td><input type='checkbox' name='importFile[" + item.id + "]' checked='checked'/></td>" +
                     "<td>" + item.original_name + "</td>" +
                     "<td>" + item.created_at + "</td>" +
-                    "<td>" + item.finished + "</td>" +
-                    "<td>" + item.updated_at + "</td>" +
+                    "<td>" + item.import_status + "</td>" +
+                    "<td>" + item.validation_status + "</td>" +
+                    "<td>" + item.emails_count + "</td>" +
                     "</tr>";
             }
             $list.html(content);

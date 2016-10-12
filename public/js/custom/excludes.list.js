@@ -28,8 +28,11 @@ var ExcludeList = function () {
                     var item = data[i];
                     content += "" +
                         "<tr>" +
-                        "<td>" + exclude.preTemplate + '<strong>' + item.value + '</strong>' + exclude.postTemplate + "</td>" +
-                        "<td><a href='" + item.url + "'>delete</a></td>" +
+                            "<td><input type='checkbox' name='exclude[" + item.type + "][" + item.id + "]' checked='checked'/></td>"+
+                            "<td>" + exclude.preTemplate + '<strong>' + item.value + '</strong>' + exclude.postTemplate + "</td>" +
+                            "<td>" +
+                                "<a href='" + item.url + "'>delete</a>" +
+                            "</td>" +
                         "</tr>";
                 }
                 $list.html(content);

@@ -10,10 +10,13 @@
             Uploaded at
         </th>
         <th>
-            Finished
+           Import Status
         </th>
         <th>
-            Last Update
+            Validation status
+        </th>
+        <th>
+            Emails
         </th>
     </tr>
     </thead>
