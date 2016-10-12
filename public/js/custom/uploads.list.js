@@ -1,7 +1,7 @@
 /**
  * Created by m on 16.08.16.
  */
-var uploadsList = function () {
+var uploadsList = function (uploadsListUrl) {
     var $list = $("#js-uploads-list");
 
     this.update = function (d) {
@@ -27,11 +27,11 @@ var uploadsList = function () {
         }
     };
 
-    this.updateData = function (url) {
+    this.updateData = function () {
         var self = this;
         $.ajax(
             {
-                url: url,
+                url: uploadsListUrl,
                 dataType: "json",
                 success: function (r) {
                     self.update(r);
@@ -44,12 +44,12 @@ var uploadsList = function () {
     }
 };
 
-var uploadList = new uploadsList();
+var uploadList = new uploadsList(uploadsListUrl);
 
 
 
 $(function () {
-    uploadList.updateData(uploadsListUrl);
+    uploadList.updateData();
     // setInterval(function (url) {
     //     uploadList.updateData(url);
     // }, 10000, uploadsListUrl);

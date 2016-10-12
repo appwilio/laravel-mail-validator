@@ -1,7 +1,7 @@
 /**
  * Created by m on 16.08.16.
  */
-var ExcludeList = function () {
+var ExcludeList = function (excludesListUrl, excludesCreateUrl) {
     var responseArrays = [
         {
             "key": "prefix",
@@ -43,11 +43,11 @@ var ExcludeList = function () {
         });
     };
 
-    this.updateData = function (url) {
+    this.updateData = function () {
         var self = this;
         $.ajax(
             {
-                url: url,
+                url: excludesListUrl,
                 dataType: "json",
                 success: function (r) {
                     self.update(r);
@@ -59,12 +59,12 @@ var ExcludeList = function () {
         );
     };
 
-    this.sendExclude = function ($form, url) {
+    this.sendExclude = function ($form) {
         var self = this,
             data = $form.serialize();
 
         return $.ajax({
-            url: url,
+            url: excludesCreateUrl,
             data: data,
             method: "post",
             dataType: "json",
@@ -80,13 +80,13 @@ var ExcludeList = function () {
     }
 };
 
-var excludeList = new ExcludeList();
+var excludeList = new ExcludeList(excludesListUrl, excludesCreateUrl);
 
 $(function () {
-    excludeList.updateData(excludesListUrl);
+    excludeList.updateData();
     $("#js-exclude-prefix-form, #js-exclude-suffix-form").on("submit", function (e) {
         e.preventDefault();
-        excludeList.sendExclude($(this), excludesCreateUrl).then(function () {
+        excludeList.sendExclude($(this)).then(function () {
             window.location.reload();
         });
         return false;

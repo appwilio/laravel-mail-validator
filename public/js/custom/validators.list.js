@@ -1,7 +1,7 @@
 /**
  * Created by m on 16.08.16.
  */
-var ValidationsList = function () {
+var ValidationsList = function (validatorsListUrl) {
     var $list = $("#js-validators-list");
 
     this.update = function (d) {
@@ -26,11 +26,11 @@ var ValidationsList = function () {
             $list.html("");
         }
     };
-    this.updateData = function (url) {
+    this.updateData = function () {
         var self = this;
         $.ajax(
             {
-                url: url,
+                url: validatorsListUrl,
                 dataType: "json",
                 success: function (r) {
                     self.update(r);
@@ -43,11 +43,11 @@ var ValidationsList = function () {
     }
 };
 
-var validationsList = new ValidationsList();
+var validationsList = new ValidationsList(validatorsListUrl);
 
 $(function () {
-    validationsList.updateData(validatorsListUrl);
-    setInterval(function (url) {
-        validationsList.updateData(url);
-    }, 10000, validatorsListUrl);
+    validationsList.updateData();
+    setInterval(function () {
+        validationsList.updateData();
+    }, 10000);
 });

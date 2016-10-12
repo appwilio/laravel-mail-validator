@@ -1,7 +1,7 @@
 /**
  * Created by m on 16.08.16.
  */
-var ExportsList = function () {
+var ExportsList = function (exportsListUrl, isPendingUrl) {
     var $list = $("#js-exports-list"),
         $exportWarning = $("#js-export-warning"),
         $exportButton = $("#js-export-button");
@@ -26,11 +26,11 @@ var ExportsList = function () {
         }
     };
 
-    this.updateData = function (url) {
+    this.updateData = function () {
         var self = this;
         $.ajax(
             {
-                url: url,
+                url: exportsListUrl,
                 dataType: "json",
                 success: function (r) {
                     self.update(r);
@@ -79,16 +79,16 @@ var ExportsList = function () {
             error: function (r) {
                 console.error(r)
             },
-            finally: function (r) {
-                console.info(r)
+            complete: function (r) {
+                self.updateData();
             }
         })
     };
 
-    this.checkPendingValidations = function (url) {
+    this.checkPendingValidations = function () {
         var self = this;
         $.ajax({
-            url: url,
+            url: isPendingUrl,
             dataType: "json",
             success: function (r) {
                 if (false === r) {
@@ -104,16 +104,15 @@ var ExportsList = function () {
     }
 };
 
-var exportsList = new ExportsList();
+var exportsList = new ExportsList(exportsListUrl, isPendingUrl);
 
 $(function () {
-    exportsList.updateData(exportsListUrl);
-    exportsList.checkPendingValidations(isPendingUrl);
+    exportsList.updateData();
+    // exportsList.checkPendingValidations(isPendingUrl);
     $("#js-export-button").on("click", function () {
         exportsList.export($(this).data("ajax-url"));
     });
-    setInterval(function (url) {
-        exportsList.updateData(url);
-        exportsList.checkPendingValidations(isPendingUrl);
-    }, 10000, exportsListUrl);
+    setInterval(function () {
+        exportsList.updateData();
+    }, 10000);
 });
