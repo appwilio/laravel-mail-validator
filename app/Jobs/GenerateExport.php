@@ -57,17 +57,17 @@ class GenerateExport extends Job implements ShouldQueue
 
         File::put($file, "");
 
-        $emailExcludesQuery = Exclude::where("type", Exclude::PREFIX_EXCLUDE);
         if(count($this->excludePrefix)>0)  {
-            $emailExcludesQuery->whereIn("id", $this->excludePrefix);
+            $emailExcludes = Exclude::where("type", Exclude::PREFIX_EXCLUDE)->whereIn("id", $this->excludePrefix)->pluck("value");
+        } else {
+            $emailExcludes = [];
         }
-        $emailExcludes = $emailExcludesQuery->get(["value"])->pluck("value");
 
-        $domainsExcludesQuery = Exclude::where("type", Exclude::SUFFIX_EXCLUDE);
         if(count($this->excludeSuffix) > 0) {
-            $domainsExcludesQuery->whereIn("id", $this->excludeSuffix);
+            $domainsExcludes = Exclude::where("type", Exclude::SUFFIX_EXCLUDE)->whereIn("id", $this->excludeSuffix)->pluck("value");
+        } else {
+            $domainsExcludes = [];
         }
-        $domainsExcludes = $domainsExcludesQuery->get(["value"])->pluck("value");
 
         $domainsRequest = (new Domain)->newQuery();
 
@@ -75,27 +75,34 @@ class GenerateExport extends Job implements ShouldQueue
             $domainsRequest->where("domain", "NOT LIKE", "%{$exclude}");
         }
 
-
         $domainsRequest->chunk(1, function ($domains) use (&$a, $emailExcludes, $file, $skip, $export) {
             /**
              * @var $domain Domain
              */
             foreach ($domains as $domain) {
                 $failed = $domain->validations()->where("valid", false)->first();
+                /**
+                 * no failed domains
+                 */
                 if (null == $failed) {
                     $emailsQuery = $domain->load("emails")->emails();
+
                     if(count($this->includeFiles)>0){
                         $emailsQuery->whereHas("import_files", function ($query) {
                             $query->whereIn('import_file_id', $this->includeFiles);
                         });
                     }
+
                     foreach ($emailExcludes as $exclude) {
                         $emailsQuery->where("address", "NOT LIKE", "{$exclude}%");
                     }
-                    $list = $emailsQuery->get(["address"])->pluck("address")->toArray();
+
+                    $list = $emailsQuery->pluck("address")->toArray();
+
                     if(count($list)>0) {
                         File::append($file, implode(PHP_EOL, $list).PHP_EOL);
                     }
+
                 }
             }
         });
