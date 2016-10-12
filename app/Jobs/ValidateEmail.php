@@ -22,17 +22,21 @@ class ValidateEmail extends Job implements ShouldQueue
      * @var Validator
      */
     protected $validator;
+    /**
+     * @var EmailValidation
+     */
+    protected $validation;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Email $email, Validator $validator)
+    public function __construct(Email $email, Validator $validator, EmailValidation $validation)
     {
         $this->email = $email;
-
         $this->validator = $validator;
+        $this->validation = $validation;
     }
 
     /**
@@ -42,31 +46,31 @@ class ValidateEmail extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $valid = new EmailValidation([
-            "validator" => $this->validator->getName()
-        ]);
 
         $class = get_class($this->validator);
 
-
         try {
-            $check = $this->validator->validate($this->email->address);
-            $valid->valid = $check;
 
+            $check = $this->validator->validate($this->email->address);
+            $this->validation->valid = $check;
 
         } catch (\Exception $e) {
 
             Cache::increment(prefix_invalid($class));
 
-            $valid->valid = false;
-            $valid->message = $e->getMessage();
+            $this->validation->valid = false;
+            $this->validation->message = $e->getMessage();
         }
-        if ($valid->valid) {
+
+        if ($this->validation) {
             Cache::increment(prefix_valid($class));
         } else {
             Cache::increment(prefix_invalid($class));
         }
+
         Cache::decrement(prefix_pending($class));
-        $this->email->validations()->save($valid);
+
+        $this->validation->is_pending = false;
+        $this->validation->save();
     }
 }

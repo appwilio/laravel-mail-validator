@@ -22,17 +22,20 @@ class ValidateDomain extends Job implements ShouldQueue
      * @var Validator
      */
     protected $validator;
-
+    /**
+     * @var DomainValidation
+     */
+    protected $validation;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Domain $domain, Validator $validator)
+    public function __construct(Domain $domain, Validator $validator, DomainValidation $validation)
     {
         $this->domain = $domain;
-
         $this->validator = $validator;
+        $this->validation = $validation;
     }
 
     /**
@@ -42,26 +45,29 @@ class ValidateDomain extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $valid = new DomainValidation([
-            "validator" => $this->validator->getName()
-        ]);
-
         $class = get_class($this->validator);
 
         try {
+
             $check = $this->validator->validate($this->domain->domain);
-            $valid->valid = $check;
+            $this->validation->valid = $check;
 
         } catch (\Exception $e) {
-            $valid->valid = false;
-            $valid->message = $e->getMessage();
+
+            $this->validation->valid = false;
+            $this->validation->message = $e->getMessage();
+
         }
-        if($valid->valid) {
+
+        if($this->validation->valid) {
             Cache::increment(prefix_valid($class));
         } else {
             Cache::increment(prefix_invalid($class));
         }
+
         Cache::decrement(prefix_pending($class));
-        $this->domain->validations()->save($valid);
+
+        $this->validation->is_pending = false;
+        $this->validation->save();
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Contracts\Validator;
+use App\Domain\Repository\DomainValidationRepository;
+use App\Domain\Repository\EmailValidationRepository;
+use App\Domain\Repository\ValidationRepository;
 use Cache;
 use DB;
 use Illuminate\Console\Command;
@@ -24,13 +27,25 @@ class ResultCache extends Command
     protected $description = 'Recalculate results cache';
 
     /**
+     * @var $domainValidationRepository DomainValidationRepository
+     */
+    protected $domainValidationRepository;
+
+    /**
+     * @var $domainValidationRepository EmailValidationRepository
+     */
+    protected $emailValidationRepository;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DomainValidationRepository $DVRepository, EmailValidationRepository $EVRepository)
     {
         parent::__construct();
+        $this->domainValidationRepository =  $DVRepository;
+        $this->emailValidationRepository = $EVRepository;
     }
 
     /**
@@ -41,12 +56,12 @@ class ResultCache extends Command
         $this->info("start");
         foreach (config("validators.domain") as $validatorClass) {
             $this->info("tik domain {$validatorClass}");
-            $this->recalculate($validatorClass, $this->domainValidations());
+            $this->recalculate($validatorClass, $this->domainValidationRepository);
 
         }
         foreach (config("validators.email") as $validatorClass) {
             $this->info("tik email {$validatorClass}");
-            $this->recalculate($validatorClass, $this->emailValidations());
+            $this->recalculate($validatorClass, $this->emailValidationRepository);
         }
         $this->info("done");
     }
@@ -73,39 +88,19 @@ class ResultCache extends Command
 
     /**
      * @param $validatorClass
-     * @param string $query
+     * @param $repository ValidationRepository
      */
-    protected function recalculate($validatorClass, $query)
+    protected function recalculate($validatorClass, $repository)
     {
         /**
          * @var $validator Validator
          */
         $validator = new $validatorClass();
         $cacheTemplate = [
-            "valid" => 0,
-            "invalid" => 0,
-            "pending" => 0
+            "valid" => $repository->getStatusCount($validator->getName(), true),
+            "invalid" => $repository->getStatusCount($validator->getName(), false),
+            "pending" => $repository->getPendingCount($validator->getName())
         ];
-        $stat = DB::select(
-            $query,
-            [
-                "validator" => $validator->getName()
-            ]
-        );
-        foreach ($stat as $line) {
-            if (null === $line->valid) {
-                $cacheTemplate["pending"] = $line->count;
-            } else {
-                switch ($line->valid) {
-                    case 1:
-                        $cacheTemplate["valid"] = $line->count;
-                        break;
-                    case 0:
-                        $cacheTemplate["invalid"] = $line->count;
-                        break;
-                }
-            }
-        }
         $this->store($validatorClass, $cacheTemplate);
     }
 

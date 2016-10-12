@@ -25,7 +25,6 @@ class EmailValidationPending extends Job
     public function handle()
     {
         foreach (config("validators.email") as $validatorClass) {
-            Cache::increment(prefix_pending($validatorClass));
         }
     }
 }

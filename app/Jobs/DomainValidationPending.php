@@ -21,7 +21,6 @@ class DomainValidationPending extends Job
     public function handle()
     {
         foreach (config("validators.domain") as $validatorClass) {
-            Cache::increment(prefix_pending($validatorClass));
         }
     }
 }

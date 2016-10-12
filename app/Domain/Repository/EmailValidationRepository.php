@@ -8,13 +8,13 @@
 
 namespace App\Domain\Repository;
 
-use App\Domain\Model\DomainValidation;
+use App\Domain\Model\EmailValidation;
 
-class DomainValidationRepository extends ValidationRepository
+class EmailValidationRepository extends ValidationRepository
 {
     protected function getModelClass()
     {
-        return DomainValidation::class;
+        return EmailValidation::class;
     }
 
 }
