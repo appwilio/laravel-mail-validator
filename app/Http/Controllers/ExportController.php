@@ -7,6 +7,7 @@ use App\Domain\Repository\ExportRepository;
 use App\Domain\Repository\ImportFileRepository;
 use App\Jobs\GenerateExport;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
@@ -33,7 +34,7 @@ class ExportController extends Controller
         }));
     }
 
-    public function doExport(){
+    public function fullExport(){
         $file_name = md5(time().rand(100, 999)).".csv";
 
         $export = new Export([
@@ -44,4 +45,24 @@ class ExportController extends Controller
         $this->dispatch(new GenerateExport($export));
         return redirect()->back();
     }
+
+    public function filteredExport(Request $r) {
+        $file_name = md5(time().rand(100, 999)).".csv";
+
+        $export = new Export([
+            "name" => $file_name,
+            "finished" => false
+        ]);
+        $export->save();
+        $this->dispatch(
+            new GenerateExport(
+                $export,
+                $r->input("importFile", []),
+                $r->input("exclude.prefix", []),
+                $r->input("exclude.suffix", [])
+            )
+        );
+        return response("", 200);
+    }
+
 }

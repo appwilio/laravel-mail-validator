@@ -28,7 +28,7 @@ var ExcludeList = function () {
                     var item = data[i];
                     content += "" +
                         "<tr>" +
-                            "<td><input type='checkbox' name='exclude[" + item.type + "][" + item.id + "]' checked='checked'/></td>"+
+                            "<td><input type='checkbox' name='exclude[" + item.id + "]' value='" + item.id + "' checked='checked'/></td>"+
                             "<td>" + exclude.preTemplate + '<strong>' + item.value + '</strong>' + exclude.postTemplate + "</td>" +
                             "<td>" +
                                 "<a href='" + item.url + "'>delete</a>" +
@@ -63,7 +63,7 @@ var ExcludeList = function () {
         var self = this,
             data = $form.serialize();
 
-        $.ajax({
+        return $.ajax({
             url: url,
             data: data,
             method: "post",
@@ -86,10 +86,12 @@ $(function () {
     excludeList.updateData(excludesListUrl);
     $("#js-exclude-prefix-form, #js-exclude-suffix-form").on("submit", function (e) {
         e.preventDefault();
-        excludeList.sendExclude($(this), excludesCreateUrl);
+        excludeList.sendExclude($(this), excludesCreateUrl).then(function () {
+            window.location.reload();
+        });
         return false;
     });
-    setInterval(function (url) {
-        excludeList.updateData(url);
-    }, 10000, excludesListUrl);
+    // setInterval(function (url) {
+    //     excludeList.updateData(url);
+    // }, 10000, excludesListUrl);
 });

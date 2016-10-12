@@ -8,8 +8,7 @@ var ExportsList = function () {
 
     this.update = function (d) {
 
-        if ("undefined" !== typeof(d)) {
-
+        if (undefined !== d) {
             var content = "";
             for (var i = 0; i < d.length; i++) if (d.hasOwnProperty(i)) {
                 var item = d[i];
@@ -53,6 +52,39 @@ var ExportsList = function () {
         $exportWarning.show();
     };
 
+    this.export = function (url) {
+        var self = this;
+
+        data = {
+            "importFile": [],
+            "exclude": {
+                "prefix": [],
+                "suffix": []
+            }
+        };
+
+        $("#js-uploads-list").find("input:checked").each(function(i, e){ data.importFile.push(e.value)});
+        $("#js-exclude-prefix-list").find("input:checked").each(function(i, e){ data.exclude.prefix.push(e.value)});
+        $("#js-exclude-suffix-list").find("input:checked").each(function(i, e){ data.exclude.suffix.push(e.value)});
+
+        $.ajax({
+            url: url,
+            type: "post",
+            dataType: "json",
+            data: data,
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function (r) {
+                console.log(r);
+            },
+            error: function (r) {
+                console.error(r)
+            },
+            finally: function (r) {
+                console.info(r)
+            }
+        })
+    };
+
     this.checkPendingValidations = function (url) {
         var self = this;
         $.ajax({
@@ -77,6 +109,9 @@ var exportsList = new ExportsList();
 $(function () {
     exportsList.updateData(exportsListUrl);
     exportsList.checkPendingValidations(isPendingUrl);
+    $("#js-export-button").on("click", function () {
+        exportsList.export($(this).data("ajax-url"));
+    });
     setInterval(function (url) {
         exportsList.updateData(url);
         exportsList.checkPendingValidations(isPendingUrl);

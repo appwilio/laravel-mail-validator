@@ -17,8 +17,8 @@
     <tbody id="js-exports-list">
     </tbody>
 </table>
-<a id="js-export-button" style="display: none" class="btn-primary btn" href="{{url()->route("export.make")}}">New export</a>
-<a id="js-export-warning" class="btn-danger btn" href="#">Validation not finished yet</a>
+<button id="js-export-button" class="btn-primary btn" data-ajax-url="{{route("export.make")}}">New export</button>
+{{--<a id="js-export-warning" class="btn-danger btn" href="#">Validation not finished yet</a>--}}
 @section('scripts')
     @parent
     <script type="text/javascript">

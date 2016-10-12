@@ -33,5 +33,6 @@ Route::group(["prefix" => "excludes"], function () {
 
 Route::group(["prefix" => "export"], function () {
     Route::get('/list', ["as" => "export.list", "uses" => "ExportController@exportsList"]);
-    Route::get('/make', ["as" => "export.make", "uses" => "ExportController@doExport"]);
+    Route::get('/make', ["as" => "export.make", "uses" => "ExportController@fullExport"]);
+    Route::post('/make', ["as" => "export.make", "uses" => "ExportController@filteredExport"]);
 });

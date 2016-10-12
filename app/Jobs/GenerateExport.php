@@ -18,15 +18,30 @@ class GenerateExport extends Job implements ShouldQueue
      * @var $export Export
      */
     protected $export;
+    /**
+     * @var $includeFiles array
+     */
+    protected $includeFiles;
+    /**
+     * @var $excludePrefix array
+     */
+    protected $excludePrefix;
+    /**
+     * @var $excludeSuffix array
+     */
+    protected $excludeSuffix;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Export $export)
+    public function __construct(Export $export, $includeFiles = [], $excludePrefix = [], $excludeSuffix = [])
     {
         $this->export = $export;
+        $this->includeFiles = $includeFiles;
+        $this->excludePrefix = $excludePrefix;
+        $this->excludeSuffix = $excludeSuffix;
     }
 
     /**
@@ -42,8 +57,17 @@ class GenerateExport extends Job implements ShouldQueue
 
         File::put($file, "");
 
-        $emailExcludes = Exclude::where("type", Exclude::PREFIX_EXCLUDE)->get(["value"])->pluck("value");
-        $domainsExcludes = Exclude::where("type", Exclude::SUFFIX_EXCLUDE)->get(["value"])->pluck("value");
+        $emailExcludesQuery = Exclude::where("type", Exclude::PREFIX_EXCLUDE);
+        if(count($this->excludePrefix)>0)  {
+            $emailExcludesQuery->whereIn("id", $this->excludePrefix);
+        }
+        $emailExcludes = $emailExcludesQuery->get(["value"])->pluck("value");
+
+        $domainsExcludesQuery = Exclude::where("type", Exclude::SUFFIX_EXCLUDE);
+        if(count($this->excludeSuffix) > 0) {
+            $domainsExcludesQuery->whereIn("id", $this->excludeSuffix);
+        }
+        $domainsExcludes = $domainsExcludesQuery->get(["value"])->pluck("value");
 
         $domainsRequest = (new Domain)->newQuery();
 
@@ -60,13 +84,18 @@ class GenerateExport extends Job implements ShouldQueue
                 $failed = $domain->validations()->where("valid", false)->first();
                 if (null == $failed) {
                     $emailsQuery = $domain->load("emails")->emails();
+                    if(count($this->includeFiles)>0){
+                        $emailsQuery->whereHas("import_files", function ($query) {
+                            $query->whereIn('import_file_id', $this->includeFiles);
+                        });
+                    }
                     foreach ($emailExcludes as $exclude) {
                         $emailsQuery->where("address", "NOT LIKE", "{$exclude}%");
                     }
-                    $list = $emailsQuery->get(["address"])->pluck("address");
-
-                    File::append($file, implode(PHP_EOL, $list->toArray()).PHP_EOL);
-
+                    $list = $emailsQuery->get(["address"])->pluck("address")->toArray();
+                    if(count($list)>0) {
+                        File::append($file, implode(PHP_EOL, $list).PHP_EOL);
+                    }
                 }
             }
         });

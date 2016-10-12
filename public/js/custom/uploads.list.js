@@ -13,7 +13,7 @@ var uploadsList = function () {
                 var item = d[i];
                 content += "" +
                     "<tr>" +
-                    "<td><input type='checkbox' name='importFile[" + item.id + "]' checked='checked'/></td>" +
+                    "<td><input type='checkbox' name='importFile[" + item.id + "]' checked='checked' value='" + item.id + "'/></td>" +
                     "<td>" + item.original_name + "</td>" +
                     "<td>" + item.created_at + "</td>" +
                     "<td>" + item.import_status + "</td>" +
@@ -50,7 +50,7 @@ var uploadList = new uploadsList();
 
 $(function () {
     uploadList.updateData(uploadsListUrl);
-    setInterval(function (url) {
-        uploadList.updateData(url);
-    }, 10000, uploadsListUrl);
+    // setInterval(function (url) {
+    //     uploadList.updateData(url);
+    // }, 10000, uploadsListUrl);
 });
