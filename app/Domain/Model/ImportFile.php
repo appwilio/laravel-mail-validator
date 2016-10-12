@@ -12,4 +12,8 @@ class ImportFile extends Model
     protected $casts = [
         'finished' => 'boolean'
     ];
+
+    public function emails(){
+        return $this->belongsToMany('App\Domain\Model\Email');
+    }
 }

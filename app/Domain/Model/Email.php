@@ -24,4 +24,8 @@ class Email extends Model
     public function domain(){
         return $this->belongsTo('App\Domain\Model\Email');
     }
+
+    public function import_files(){
+        return $this->belongsToMany('App\Domain\Model\ImportFile');
+    }
 }

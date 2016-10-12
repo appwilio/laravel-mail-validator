@@ -47,7 +47,11 @@ class ReadImportFile extends Job implements ShouldQueue
             $email = sanitize_email($row[0]);
 
             if($email) {
-                Email::firstOrCreate(["address"=>$email]);
+                /**
+                 * @var $newEmail Email
+                 */
+                $newEmail = Email::firstOrCreate(["address"=>$email]);
+                $newEmail->import_files()->attach($file->id);
             }
 
             $file->lines_processed = $count;
