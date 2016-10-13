@@ -23,6 +23,7 @@ Route::group(["prefix" => "validator"], function () {
 Route::group(["prefix" => "upload"], function () {
     Route::get('/list', ["as" => "upload.list", "uses" => "UploadController@uploadsList"]);
     Route::post('/', ["as" => "upload.do", "uses" => "UploadController@doUpload"]);
+    Route::get('/validation-status-renew/{id}', ["as" => "upload.renew_validation", "uses" => "UploadController@renewValidation"]);
 });
 
 Route::group(["prefix" => "excludes"], function () {

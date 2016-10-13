@@ -25,7 +25,30 @@ class ImportFileRepository extends AbstractRepository
                                             "finished" : (
                                                 ( $file->updated_at > $file->created_at ) ? "started" : "pending"
                                             );
-            $response["validation_status"] = "unknown";
+
+            $response["available"] = false;
+
+            switch ($file->validation_status) {
+                case ImportFile::VALIDATION_CHECKING:
+                    $response["validation_status"] = "calculating";
+                    $response["update_link"] = false;
+                    break;
+                case ImportFile::VALIDATION_FINISHED:
+                    $response["validation_status"] = "finished";
+                    $response["update_link"] = false;
+                    $response["available"] = true;
+                    break;
+                case ImportFile::VALIDATION_PENDING:
+                    $response["validation_status"] = "in process";
+                    $response["update_link"] = route("upload.renew_validation", $file->id);
+                    break;
+                case ImportFile::VALIDATION_UNKNOWN:
+                default:
+                    $response["validation_status"] = "unknown";
+                    $response["update_link"] = route("upload.renew_validation", $file->id);
+            }
+
+
             return $response;
         };
     }

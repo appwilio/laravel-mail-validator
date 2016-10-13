@@ -16,6 +16,9 @@
             Validation status
         </th>
         <th>
+            Renew validation status
+        </th>
+        <th>
             Emails
         </th>
     </tr>

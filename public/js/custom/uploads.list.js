@@ -13,11 +13,33 @@ var uploadsList = function (uploadsListUrl) {
                 var item = d[i];
                 content += "" +
                     "<tr>" +
-                    "<td><input type='checkbox' name='importFile[" + item.id + "]' checked='checked' value='" + item.id + "'/></td>" +
+                    "<td>" +
+                        "<input " +
+                            "type='checkbox' " +
+                            "name='importFile[" + item.id + "]'" +
+                            function (item) {
+                                if(item.available) {
+                                    return "checked='checked'"
+                                } else {
+                                    return "disabled='disabled'"
+                                }
+                            }(item) +
+                            "  value='" + item.id + "'" +
+                        "/>" +
+                    "</td>" +
                     "<td>" + item.original_name + "</td>" +
                     "<td>" + item.created_at + "</td>" +
                     "<td>" + item.import_status + "</td>" +
                     "<td>" + item.validation_status + "</td>" +
+                    "<td>" +
+                        function (item) {
+                            if(item.update_link) {
+                                return "<a href='"+item.update_link+"'>Renew</a>" ;
+                            } else {
+                                return "";
+                            }
+                        }(item) +
+                    "</td>" +
                     "<td>" + item.emails_count + "</td>" +
                     "</tr>";
             }

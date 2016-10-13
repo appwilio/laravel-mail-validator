@@ -6,6 +6,7 @@ use App\Domain\Model\ImportFile;
 use App\Domain\Repository\ImportFileRepository;
 use App\Http\Requests\UploadRequest;
 use App\Jobs\ReadImportFile;
+use App\Jobs\RenewFileValidationStatus;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class UploadController extends Controller
@@ -43,6 +44,17 @@ class UploadController extends Controller
             $this->dispatch((new ReadImportFile($importFile))->delay(1));
 
         }
+        return redirect()->back();
+    }
+
+    public function renewValidation($id){
+        $import = $this->importFiles->findById($id);
+
+        $import->validation_status = ImportFile::VALIDATION_CHECKING;
+        $import->save();
+
+        $this->dispatch(new RenewFileValidationStatus($import));
+
         return redirect()->back();
     }
 }
