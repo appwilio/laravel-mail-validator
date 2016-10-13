@@ -20,7 +20,8 @@ class Kernel extends ConsoleKernel
         Commands\SplitDomain::class,
         Commands\ExportCsv::class,
         Commands\DeleteDublicates::class,
-        Commands\ResultCache::class
+        Commands\ResultCache::class,
+        Commands\RerunImport::class
     ];
 
     /**
