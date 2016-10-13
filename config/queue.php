@@ -89,4 +89,9 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    'queues_list' => [
+        'export' => 'export',
+        'import' => 'import'
+    ]
+
 ];

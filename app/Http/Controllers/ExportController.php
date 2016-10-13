@@ -42,7 +42,10 @@ class ExportController extends Controller
             "finished" => false
         ]);
         $export->save();
-        $this->dispatch(new GenerateExport($export));
+
+        $job = (new GenerateExport($export))->onQueue(config("queue.queues_list.export"));
+
+        $this->dispatch($job);
         return redirect()->back();
     }
 
@@ -54,14 +57,15 @@ class ExportController extends Controller
             "finished" => false
         ]);
         $export->save();
-        $this->dispatch(
-            new GenerateExport(
-                $export,
-                $r->input("importFile", []),
-                $r->input("exclude.prefix", []),
-                $r->input("exclude.suffix", [])
-            )
-        );
+
+        $job = (new GenerateExport(
+            $export,
+            $r->input("importFile", []),
+            $r->input("exclude.prefix", []),
+            $r->input("exclude.suffix", [])
+        ))->onQueue(config("queue.queues_list.export"));
+
+        $this->dispatch($job);
         return response("", 200);
     }
 

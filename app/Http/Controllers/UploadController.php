@@ -41,7 +41,9 @@ class UploadController extends Controller
 
             $file->move(config("import.directory"), $new_name);
 
-            $this->dispatch((new ReadImportFile($importFile))->delay(1));
+            $job = (new ReadImportFile($importFile))->onQueue(config("queue.queues_list.import"));
+
+            $this->dispatch($job);
 
         }
         return redirect()->back();
@@ -53,7 +55,9 @@ class UploadController extends Controller
         $import->validation_status = ImportFile::VALIDATION_CHECKING;
         $import->save();
 
-        $this->dispatch(new RenewFileValidationStatus($import));
+        $job = (new RenewFileValidationStatus($import))->onQueue(config("queue.queues_list.export"));
+
+        $this->dispatch($job);
 
         return redirect()->back();
     }
